@@ -1,0 +1,57 @@
+https://home.cnblogs.com/u/jiangshitong/
+三次登录
+
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
+'''
+#名单文件：username
+# 数据结构：{'用户名'：['密码'，'输错次数']}
+#{'jax': ['123', 0], 'ez': ['123', 0]} 
+'''
+
+
+with open('username',mode='r',encoding='utf-8') as f1:  # 打开存储用户数据的文件
+    count = 0
+    content = f1.read()
+    while count <3:
+        flag = True   # 创建flag标志位，等用户民存在则赋值为False，如果一直为True 则输入 用户名不存在。
+        user = input('输入用户名：')
+        current_auth = eval(content)
+        for key in current_auth:
+            if user == key:
+                flag = False    # 条件成立后进入if 则说明 输入的user是存在的
+                if current_auth[user][1] >2:    # 如果输入密码错误大于3次 break 退出循环
+                    print('该用户已被锁定,请联系管理员')
+                    count +=1
+                    break
+                pwd = input('输入密码：')
+                if current_auth[user][0] == pwd:
+                    current_auth[user][1] = 0
+                    with open('username',mode='w',encoding='utf-8') as f1:
+                        f1.write(str(current_auth))
+                    print('登录成功')
+                    count = 3
+                    flag = True
+                    break
+                else:
+                    current_auth[user][1] +=1      # 用户密码没有输入正确，错误次数自增1
+                    with open('username',mode='w',encoding='utf-8') as f1:
+                        f1.write(str(current_auth))
+                    print('您的密码错误')
+                    count += 1
+        if count == 3 and flag:
+            print('欢迎回家')
+            break
+        if flag:     # 如果flag还为 True 则 说明不存在该用户 则输出不存在该用户
+            count +=1
+            print('不存在该用户')
+
+        if count >2:
+            print('您输入的次数大于三次！退出程序')
+
+
+
+
+
+

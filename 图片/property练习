@@ -1,0 +1,199 @@
+作业一：总结
+	1.什么是绑定到对象的方法，如何定义，如何调用，给谁用？有什么特性
+	2.什么是绑定到类的方法，如何定义，如何调用，给谁用？有什么特性
+	3.什么是解除绑定的函数，如何定义，如何调用，给谁用？有什么特性
+	4.什么是property，如何定义，如何使用，给谁用，什么情况下应该将一个属性定义成property，有什么好处？
+
+1.	
+class Foo:
+	def bar(self):
+        pass
+    @classmethod	#解除绑定的函数
+    def test(cls,x):
+        print(cls,x)
+print(Foo.bar)      #绑定给对象的方法
+print(Foo.test)     #绑定给类的方法
+f=Foo()
+print(f.bar)        #绑定给foo下的对象f
+	
+绑定给对象的方法:
+只要在类内部定义的，并且没有被任何装饰器修饰过的方法，都是绑定对象的
+指的是，就给对象去用，
+使用方式：对象.对象的绑定方法（），不用为self传值
+特性：调用时会把对象本身当成第一个参数传给对象的绑定方法
+与普通方法区别是：类方法只能访问类变量，不能访问实例变量
+
+绑定到类的方法：classmethod
+在类内部定义的，并且被装饰器@classmethod修饰过的方法，都是绑定到类的
+指定是，就给对象去用
+使用方式：对象.对象的绑定方法
+特性：调用时会把对象本身当成第一个参数传给对象的绑定方法
+	
+解除绑定的方法：staticmethod
+既不与类绑定，也不与对象绑定，不与任何事物绑定
+绑定的特性：自动传值（绑定到类的就是自动传类，绑定到对象的就是自动传对象）
+解除绑定的特性：不管是类还是对象来调用，都没有自动传值这一说，他相当于一个普通的工具包	
+与普通方法区别是：普通的方法可以实例化直接调用，并且在方法里可以通过self.调用实例变量或类变量。但静态方法是不可以
+访问实例变量或变量的，它与类唯一的关联就是通过类名来调用这个方法
+好比那个例子eat 调用时主动传递实例本身给eat方法d.eat(d) 或者在eat()方法中取掉self参数，也就是不能通过self.调用实例
+中其他变量了
+
+	
+property是一种特殊的属性，访问它时会执行一段功能（函数）然后返回值。
+将一个类的函数定义成特性以后，对象再去使用的时候obj.name,根本无法察觉自己的name是执行了一个函数然后计算出来的，这种特性的使用方式遵循了统一访问的原则
+给对象用，好处是：
+
+　　1.将函数伪装成数据属性，把数据逻辑伪装起来。好比直接d.eat 
+
+　　2.让身高，体重等这些不断变的定义函数只用输入改变的体重，身高值得到BMI值。
+
+但是不要赋值，除非在.setter中有定义这个值的函数
+
+
+
+
+作业二：
+要求一：自定义用户信息数据结构，写入文件，然后读出内容，利用eval重新获取数据结构
+
+with open('user.db','w') as write_file:#创建并以写入的方式打开一个文件user.db
+    write_file.write(str({
+        "egon":{"password":"123",'status':False,'timeout':0},
+        "alex":{"password":"456",'status':False,'timeout':0},
+        }))#在user.db中加入两个用户信息以字典的方式储存
+
+with open('user.db','r') as read_file:#以只读的方式打开一个文件user.db
+    data=read_file.read()#读取user.db中的数据
+    d=eval(data)#将user.db中的数据转为字典
+    print(d['egon']['password'])#打印字典中egon的password 对应value
+    print(d['egon']['status'])
+    print(d['egon']['timeout'])
+
+
+	
+	
+	
+要求二：定义用户类，定义属性db，执行obj.db可以拿到用户数据结构
+
+class User: #定义User类
+    db_path='user.db'
+    def __init__(self,username): #在实例化User类时,传入Username参数的值
+        self.username=username
+    @property#将db()方法作为属性,让用户调用
+    def db(self):
+        data=open(self.db_path,'r').read()#以只读的方式打开文件user.db
+        return eval(data)#以字典的方式返回user.db中的内容
+u=User('egon')#实例化对象u,传入egon
+print(u.db['egon'])#打印又u.db()返回的字典中,对应egon的value
+print(u.db['egon']['password'])#打印又u.db()返回的字典中,对应egon的password,value
+
+
+
+
+要求三：分析下述代码的执行流程
+import time
+class User:#定义User类
+    db_path='user.db'
+    def __init__(self,name): #在实例化User类时,传入name参数的值
+        self.name=name
+    @property#将db()方法作为属性,让用户调用,同时产生db.setter和db.del方法
+    def db(self):
+        with open(self.db_path,'r') as read_file:#当调用db方法时,打开文件user.db
+            info=read_file.read()
+            return eval(info)#以字典的方式返回user.db中的用户信息
+    @db.setter#在对db属性进行修改操作的时候,调用此方法
+    def db(self,value):
+        with open(self.db_path,'w') as write_file:#创建并打开一个文件user.db
+            write_file.write(str(value))#在文件中写入db属性得到的值
+            write_file.flush()#刷新文件的缓冲区域,让数据立刻写入文件
+    def login(self): #定义login方法
+        data=self.db#data得到db方法(现在被@property修饰过的属性)返回的user.db中的数据
+        if data[self.name]['status']:#判断name的status字段是否为Ture
+            print('已经登录')
+            return True
+        if data[self.name]['timeout'] < time.time(): #判断name的timeout字段值是否小于....呃~1970年到现在的时间
+            count=0
+            while count < 3:
+                passwd=input('password>>: ')#输入密码
+                if not passwd:continue#如果密码为空,那么重新循环到输入密码
+                if passwd == data[self.name]['password']: #输入密码正确
+                    data[self.name]['status']=True#更改用户的登陆状态
+                    data[self.name]['timeout']=0#超时字段归0
+                    self.db=data#将改写过的值重新调用db.setter方法存入user.db文件中,在用户看来就是对db属性进行了重新的赋值操作
+                    break
+                count+=1#只允许用户输入三次错误的机会
+            else:
+                data[self.name]['timeout']=time.time()+10#如果三次输入错误,那么该用户将被锁定10秒
+                self.db=data#将改写过的值重新调用db.setter方法存入user.db文件中,在用户看来就是对db属性进行了重新的赋值操作
+        else:#如果判断用户的timeout大于1970年到现在的值
+            print('账号已经锁定10秒')
+
+u1=User('egon') #实例化u1传入name,egon
+print("egon login:")
+u1.login()#u1调用login的方法
+
+
+要求四：根据上述原理，编写退出登录方法（退出前要判断是否是登录状态），自定义property，供用户查看自己账号的锁定时间
+#{'alex': {'password': '456', 'timeout': 0, 'status': False}, 'egon': {'password': '123', 'timeout': 1492885232.5831945, 'status': False}}
+
+import time
+class User:#定义User类
+    db_path='user.db'
+    def __init__(self,name): #在实例化User类时,传入name参数的值
+        self.name=name
+        print("%s Login:"%self.name)
+    @property#将db()方法作为属性,让用户调用,同时产生db.setter和db.del方法
+    def db(self):
+        with open(self.db_path,'r') as read_file:#当调用db方法时,打开文件user.db
+            info=read_file.read()
+            return eval(info)#以字典的方式返回user.db中的用户信息
+    @db.setter#在对db属性进行修改操作的时候,调用此方法
+    def db(self,value):
+        with open(self.db_path,'w') as write_file:#创建并打开一个文件user.db
+            write_file.write(str(value))#在文件中写入db属性得到的值
+            write_file.flush()#刷新文件的缓冲区域,让数据立刻写入文件
+    @property
+    def UserLockTime(self):
+        return int(self.db[self.name]["timeout"]-time.time())
+    def loginOut(self):
+        data = self.db
+        if(data[self.name]['status']):
+            print(self.name, "正在登出.....")
+            data[self.name]['status'] = False
+            self.db = data
+            time.sleep(2)
+            print(self.name,"登出成功!")
+        else:
+            print(self.name,"并没有登陆")
+    def login(self): #定义login方法
+        data=self.db#data得到db方法(现在被@property修饰过的属性)返回的user.db中的数据
+        if data[self.name]['status']:#判断name的status字段是否为Ture
+            print('已经登录')
+            return True
+        if data[self.name]['timeout'] < time.time(): #判断name的timeout字段值是否小于....呃~1970年到现在的时间
+            count=0
+            while count < 3:
+                passwd=input('password>>: ')#输入密码
+                if not passwd:continue#如果密码为空,那么重新循环到输入密码
+                if passwd == data[self.name]['password']: #输入密码正确
+                    data[self.name]['status']=True#更改用户的登陆状态
+                    data[self.name]['timeout']=0#超时字段归0
+                    self.db=data#将改写过的值重新调用db.setter方法存入user.db文件中,在用户看来就是对db属性进行了重新的赋值操作
+                    print("欢迎%s登陆"%self.name)
+                    time.sleep(2)
+                    break
+                count+=1#只允许用户输入三次错误的机会
+            else:
+                data[self.name]['timeout']=time.time()+20#如果三次输入错误,那么该用户将被锁定180秒
+                self.db=data#将改写过的值重新调用db.setter方法存入user.db文件中,在用户看来就是对db属性进行了重新的赋值操作
+        else:#如果判断用户的timeout大于1970年到现在的值
+            print('账号已经锁定20秒,剩余%s秒'%self.UserLockTime)
+u1=User('egon') #实例化u1传入name,egon
+u1.login()#u1调用login的方法
+u1.loginOut()#u1调用loginOut方法
+u2=User('alex')
+u2.login()
+
+
+
+
+

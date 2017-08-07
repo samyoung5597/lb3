@@ -1,0 +1,322 @@
+1.执行 Python 脚本的两种方式
+shell中 ./1.py
+在python文件第一行头加上#!/usr/bin/python
+2.简述位、字节的关系
+数据存储是以“字节”为单位，数据传输大多数以“位”为单位。一个位代表一个0或1，1个字节等于8位
+3.简述 ascii、unicode、utf-­‐8、gbk 的关系
+ascii一个字节，占8位，只能存256个
+unicode最少2个字节 统一编码，是万国码
+utf-8 = 1字节 = 8 位是可变长编码，英文1个字节，最少3个中文字节，欧洲2个字节
+gbk 两个中文字节
+4.请写出  “李杰”  分别用 utf-­‐8 和 gbk 编码所占的位数
+李杰
+utf-8: 6个
+gbk：4个
+5.Pyhton 单行注释和多行注释分别用什么？
+单行注释: #
+多行注释：''' ... '''
+6.声明变量注意事项有那些？
+变量名必须是大小写英文字母，数字，和_的组合，且不能用数字开头。
+8.如何查看变量在内存中的地址?
+id(变量)
+9.执行 Python 程序时，自动生成的  .pyc  文件的作用是什么？
+pyc是一种二进制文件，是由py文件经过编译后生成的文件。py文件变成pyc文件后，加载的速度有所提高，而且编成pyc文件，除非反编译才能看到源码，提高安全性。
+10.
+a.实现用户输入用户名和密码，当用户名为  seven  且  密码为  123  时，显示登陆成功，否则登陆失败！
+
+import getpass
+name = input("name:")
+password = getpass.getpass("password:")
+if name == "seven" and password == "123":
+    print("login successfunl!")
+else:
+    print("failed!")
+b.实现用户输入用户名和密码，当用户名为  seven  且  密码为  123  时，显示登陆成功，否则登陆失败，失败时允许重复输入三次
+
+count = 0
+
+while count < 3:
+    name = input("name:")
+    password = input("password:")
+    if name == "seven" and password == "123":
+        print("login successful!")
+    else:
+        print("failed!")
+    count +=1
+c.实现用户输入用户名和密码，当用户名为  seven  或  alex  且  密码为  123  时，显示登陆成功，否则登陆失败，失败时允许重复输入三次     
+
+count = 0
+
+while count < 3:
+    name = input("name:")
+    password = input("password:")
+    if ( name == "seven" or name == "alex" ) and password == "123":
+        print("login successful!")
+        break
+    else:
+        print("failed!")
+    count +=1
+
+
+11、写代码
+a.  使用 while 循环实现输出 2  -­‐  3  +  4  -­‐  5  +  6  ...  +  100  的和
+i,b = 2,0
+while i <= 100:
+    if i%2 == 0:
+        b = b + i
+    else:
+        b = b - i
+    i += 1
+print(b)
+b.  使用 for 循环和 range 实现输出  1  -­‐  2  +  3  -­‐  4  +  5  -­‐  6  ...  +  99  的和
+b = 0
+for i in range(1,100):
+    if i%2 == 0:
+        b = b - i
+    else:
+        b = b + i
+    i +=1
+print(b)
+c.  使用 while 循环实现输出  1，2，3，4，5，   7，8，9，    11，12
+i = 1
+while i < 13:
+    if i == 6 or i == 10:
+        pass
+    else:
+        print(i)
+    i +=1    
+d.  使用 while 循环实现输出  1-­‐100  内的所有奇数
+i = 1
+while i < 101:
+    if i %2 == 0:
+        pass
+    else:
+        print(i)
+    i += 1    
+e.  使用 while 循环实现输出  1-­‐100  内的所有偶数
+i = 1
+while i < 101:
+    if i %2 == 0:
+        print(i)
+    else:
+        pass
+    i += 1
+
+12.分别书写数字  5，10，32，7 的二进制表示
+5：0000 0101   10：0000 1010   32：0010 0000  7：0000 0111
+13、简述对象和  类的关系（可用比喻的手法
+
+14.现有如下两个变量，请简述  n1  和  n2  是什么关系？
+    n1  =  123
+    n2  =  123
+n1,n2值相等，但内存地址指向不同
+15.、现有如下两个变量，请简述  n1  和  n2  是什么关系？
+    n1  =  123456 n2  =  123456
+n1,n2值相等，但内存地址指向不同
+16.现有如下两个变量，请简述  n1  和  n2  是什么关系？
+    n1  =  123456
+    n2  =  n1
+n1,n2 都指向同一块内存地址，数值为123，但他们的id不同，
+17.如有一下变量 n1  =  5，请使用 int 的提供的方法，得到该变量最少可以用多少个二进制位表示？
+n1 = 5
+print(n1,bit_length())
+18.布尔值分别有什么
+True和False
+19.阅读代码，请写出执行结果
+    
+    a  =  "alex"
+    b  =  a.capitalize()
+    print(a)
+    print(b)
+    请写出输出结果
+alex Alex
+20.写代码，有如下变量，请按照要求实现每个功能
+    
+    name  =  "  aleX"
+a.
+name = "aleX"
+print(name.srip())
+b.
+name = "aleX"
+print(name.startwith("al"))
+c.
+name = "aleX"
+print(name.endwith("X"))
+d.
+name = name.replace("1","p")
+    print(name)
+e.
+print(name.split("1"))
+f.
+列表类型
+g.
+print(name.upper())
+h.
+print(name.lower())
+i.
+print(name(1))
+j.
+print(name[0:3])
+k.
+print(name[-2:])
+l.
+print(name.index("e"))
+21.
+name = "hello"
+    for i in name:
+        print(i)
+22.
+li = ['alex','eric','rain']
+a.
+print(len(li))
+b.
+li.append('seven')
+print(li)
+c.
+li.insert(0,'Tony')
+print(li)
+d.
+li[1] = 'Kelly'
+print(li)
+e.
+li.remove("eric")
+print(li)
+f.
+li.pop(1)
+print(li)
+g.
+li.pop(2)
+print(li)
+h.
+del li[1:4]
+print(li)
+i.
+li.reverse()
+print(li)
+j.
+for i in range(len(li)):
+    print(i)
+k.
+
+l.
+for i in li:
+    print(li)
+
+
+23.
+
+li = ["hello",'seven',["mom",["h","kelly"],'all'],123,446
+a.
+print(li[2][1][1])
+b.
+print(li[2][2].upper())
+24.
+tu  ＝  ('alex',  'eric',  'rain')
+a.  计算元组长度并输出
+tu = ('alex','eric','rain')
+print(len(tu))
+b.  获取元组的第  2  个元素，并输出
+print(tu[1])
+c.  获取元组的第  1-­‐2  个元素，并输出
+print(tu[0:2])
+d.  请使用 for 输出元组的元素
+for i in tu:
+    print(i)
+e.  请使用 for、len、range 输出元组的索引
+for i in range(len(tu)):
+    print(i,tu[i])
+f.  请使用 enumrate 输出元祖元素和序号（序号从 10 开始）
+
+25.
+tu = ("alex",[11,22,{"k1":'v1',"k2":["age","name"],"k3":(11,22,33)},44])
+a.元组的特性？
+元组和列表类似都是有序的从0开始，不同的是元组的元素是不能修改的
+b.请问 tu 变量中的第一个元素  “alex”  是否可被修改？
+不能修改
+c.问 tu 变量中的"k2"对应的值是什么类型？是否可以被修改？如果可以，请在其中添加一个元素  “Seven”
+k2是列表类型，可以修改
+tu[1][2]["k2"].append("seven")
+print(tu)
+d.请问 tu 变量中的"k3"对应的值是什么类型？是否可以被修改？如果可以，请在其中添加一个元素  “Seven”
+k3是元组，不能修改
+26.
+dic	={'k1':"v1","k2":"v2","k3":[11,22,33]}
+a.请循环输出所有的 key
+for i in dic:
+    print(i)
+b.请循环输出所有的value
+for i in dic:
+    print(dic[i])
+c.请循环输出所有的 key 和 value
+for i in dic:
+    print(i,dic[i])
+d.请在字典中添加一个键值对，"k4":"v4"，输出添加后的字典
+dic["k4"]="v4"
+print(dic)
+e.请在修改字典中 “k1” 对应的值为 “alex”，输出修改后的字典
+dic["k1"]="alex"
+print(dic)
+f.请在 k3 对应的值中追加一个元素44，输出修改后的字典
+dic["k3"].append(44)
+print(dic)
+g.请在 k3 对应的值的第1个位置插入个元素18，输出修改后的字典
+dic["k3"].insert(0,18)
+print(dic)
+27.
+a.将字符串 s="alex" 转换成列表
+print(lsit(s))
+b.将字符串 s="alex" 转换成元祖
+print(tuple(s))
+c.将列表 li =["alex","seven"]转换成元组
+print(tuple(li))
+d.将元祖 tu =('Alex',"seven")转换成列表
+print(list(tu))
+e.将列表 li=["alex","seven"]转换成字典且字典的key按照10开始向后递增
+dic1 ={}
+for key,value in enumerate(li,start=10):
+    dic1[key] = value
+print(dic1)
+27.转码n="老男孩"
+a.将字符串转换成 utf-8 编码的字节，并输出，然后将该字节再转换成 utf-8 编码字符串，再输出
+n = "老男孩"
+print(n.encode("utf-8"))
+print(n.encode("utf-8").decode("utf-8"))
+b.将字符串转换成 gbk 编码的字节，并输出，然后将该字节再转换成 gbk 编码字符串，再输出
+print(n.encode("gbk"))
+print(n.encode("gbk").decode("gbk"))
+28.
+求1-100内的所有数的和
+sum = 0
+for i in range(100):
+    sum +=i
+print(sum)
+
+ ------没时间了。。。。。。。。。
+
+ 
+ 29.
+元素分类有如下值集合 [11,22,33,44,55,66,77,88,99,90]，
+将所有大于66的值保存至字典的第一个 key中，
+将小于66的值保存至第二个 key 的值中。即：{'k1':大于 66 的所有值,'k2':小于66 的所有值}
+
+
+30、购物车
+功能要求：
+要求用户输入总资产，例如： 2000
+显示商品列表，让用户根据序号选择商品，加入购物车
+购买，如果商品总额大于总资产，提示账户余额不足，否则，购买成功。
+goods	=	[
+{"name":"电脑","price":1999},
+{"name":"鼠标","price":10},
+{"name":"游艇","price":20},
+{"name":"美女","price":98},
+]
+
+
+
+
+
+
+
+
+

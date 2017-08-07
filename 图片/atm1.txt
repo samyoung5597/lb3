@@ -1,0 +1,196 @@
+复制代码
+# with open('user.db','w') as write_file:
+#     write_file.write(str({
+#         "egon":{"password":"123","balance":1500,'status':False,'timeout':0},
+#         "alex":{"password":"456","balance":1500, 'status':False,'timeout':0},
+#         }))
+
+import logging
+logging.basicConfig()
+
+
+
+
+
+def db_put(info):  #打开数据库操作
+    with open('user.db', 'w') as write_file:
+        write_file.write(info)
+
+def db_get():      #写入数据库操作
+    with open('user.db','r') as write_file:
+        user_db=write_file.read()
+        return eval(user_db)     #{'egon': {'password': '123', 'status': False, 'timeout': 0}, 'alex': {'password': '456', 'status': False, 'timeout': 0}}
+
+
+l=["账户信息查询","提取","还款","转账","账单"]
+l1=["添加账户","用户额度","冻结账户"]
+
+def auth_type(auth_role):
+    def auth(func):
+        def warpper():
+            if auth_role =='user':
+                global name
+                name=input("请输入银行账户： ").strip()
+                global pwd
+                pwd=input("请输入账号密码： ").strip()
+                global db
+                db=db_get()
+                if name in db and pwd == db[name]['password']:
+                   print("欢迎来到交易大厅".center(50,"-"))
+                   res=func()
+                   print(res)
+                   return res
+                else:
+                    print("账号或者用户名错误！")
+            if auth_role =='admin':
+                print("欢迎使用管理员接口".center(50,"-"))
+                db=db_get()
+                admin_name = input("请输入管理员账户： ").strip()
+                admin_psd=input("请输入管理密码： ").strip()
+                if admin_name in db and admin_psd == db[admin_name]['password']:
+                    admin_res=func()
+                    return admin_res
+        return warpper
+    return auth
+
+role=input("请输入您的角色 user or admin: ")
+if role=="user":
+    @auth_type(auth_role="user")
+    def login():
+        index = 0
+        l = ["账户信息查询", "提取", "还款", "转账", "账单"]
+        for i in l:
+            print(i, index)
+            index += 1
+        choice = input("请输入您的选择: ").strip()
+        return choice
+    res = login()
+if role=="admin":
+    @auth_type(auth_role="admin")
+    def Administration():
+        index = 0
+        for i in l1:
+            print(i, index)
+            index += 1
+    Administration()
+
+
+
+if res=="0":    #查询账户信息
+    def Account_inf(u,p):
+        account=u
+        inf=str(db_get()[u]).strip().strip("{}")
+        print("账户：%s 信息：%s"% (account,inf))
+    Account_inf(name,pwd)
+if res=='1':
+    def extract(n,p):  #提取
+        choice=input('请输入提取的金额： ').strip()
+        db=db_get()
+        banlance=db[name]['balance']-int(choice)
+        print("您的余额 %s" % banlance)
+        db[name]['balance']=banlance
+        db_put(str(db))
+    extract(name,pwd)
+
+
+if res=='2':
+    def repayment (u,p):      #还款
+        choice=input('请输入还款金额： ').strip()
+        db=db_get()
+        banlance=db[u]['balance']+int(choice)
+        print("您的余额 %s" % banlance)
+        db[u]['balance']=banlance
+        db_put(str(db))
+    repayment(name,pwd)
+
+if res=='3':
+    def transfer_accounts():
+       name_to=input("请输入转账账户： ".strip())
+       money=input("请输入额度： ").strip()
+       db = db_get()
+       banlance_u=db[name]['balance'] - int(money)
+       banlance_n = db[name_to]['balance'] + int(money)
+       db[name_to]['balance']=banlance_n
+       db[name]['balance'] = banlance_u
+       db_put(str(db))
+       print("转账成功")
+    transfer_accounts()
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+product_list = [
+    ['Iphone',2],
+    ['Mac Air',2],
+    ['XiaoMi',6],
+    ['coffee',2],
+    ['Tesla',2],
+    ['Bike',2],
+    ['Cloth',2],   ]
+shop_car={}
+print("欢迎来到乐根商城".center(50,'-'))
+
+while True:
+    index=0
+    for i in product_list:
+        print(index,i)
+        index+=1
+    choice=input("请输入商品编号: w结账 q退出: ").strip()
+    if choice.isdigit():
+        choice=int(choice)
+        if choice>len(product_list):
+            print("该商品不存在")
+        if product_list[choice][0] not in shop_car:
+            a=product_list[choice][0]
+            b=product_list[choice][1]
+            shop_car[a]=b
+        elif product_list[choice][0] in shop_car:
+            shop_car[product_list[choice][0]]+=b
+
+    elif choice=='w':
+        print("结账")
+        print("您的购物车----------%s" % shop_car  )
+        print("总价%s"% sum(shop_car.values()))
+        import ATM
+
+        print("感谢消费")
+        break
+    elif choice=='q':
+        exit()
+    else:print("请输入数字")
+
+---------------------------------------------------------------------------------------------------------------------------------------
+from ATM.DB import db_get
+from ATM.DB import db_put
+from ATM.config.atm_config import user_list
+from ATM.config.atm_config import admin_list
+from ATM.index.AUTH import auth_type
+from ATM.atm_user.find import Account_inf
+flag1=True
+flag2=True
+while flag1:
+    role=input("请输入您的角色 user or admin 退出 b: ")
+    if role=="user":
+        @auth_type(auth_role="user")
+        def login():
+            index = 0
+            for i in user_list:
+                print(i, index)
+                index += 1
+            choice = input("请输入您的选择: 退出 b ").strip()
+            return choice
+        res = login()
+
+    if role == "admin":
+        @auth_type(auth_role="admin")
+        def Administration():
+            index = 0
+            for i in admin_list:
+                print(i, index)
+                index += 1
+            choice = input("请输入您的选择: ").strip()
+            return choice
+        Administration()
+
+    if role=="b":
+        exit()

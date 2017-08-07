@@ -1,0 +1,32 @@
+1.因为本人学业不精，本ATM+Shopping还有很多问题
+    1.可以先运行shopping.py进入商城购物。
+    2.如进入信用卡请打开atm.py上面的路径注释再查看。
+
+ATM 主程目录
+    -- __init__.py
+    -- bin #执行文件 目录
+        -- __init__.py
+        -- atm.py
+        -- shopping.py
+    -- conf #配置文件
+        -- __init__.py
+        -- settings.py
+    -- core #主要程序逻辑
+        -- __init__.py
+        -- accounts.py  #用于从文件里加载和存储账户数据
+        -- auth.py      #用户认证模块及主要功能函数
+        -- db_handler.py   #数据库连接引擎
+        -- logger.py       #日志记录模块
+        -- main.py         #主逻辑交互程序
+    -- db  #用户数据存储的地方
+        -- __init__.py
+        -- account_sample.py #生成一个初始的账户数据 ,把这个数据 存成一个 以这个账户id为文件名的文件,放在accounts目录 就行了,程序自己去会这里找
+        -- accounts #存各个用户的账户数据 ,一个用户一个文件
+            -- 1234.json #一个用户账户示例文件
+        -- menu.json  #购物车文件
+     log #日志目录
+        -- __init__.py
+        -- access.log #用户访问和操作的相关日志
+        -- login_in.log    #登陆日志
+     README
+

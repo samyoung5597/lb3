@@ -1,0 +1,112 @@
+﻿作业一：完成作业未做完的集群架构
+作业二：临时配置网络（ip，网关，dns）+永久配置
+作业三：为集群内的机器设定主机名，利用/etc/hosts文件来解析自己的集群中所有的主机名，相应的，集群的配置应该改成使用主机名的方式
+lb
+vi /etc/hosts
+192.168.16.11	web1
+192.168.16.12 	web2
+
+hostnamectl set-hostname lb 
+作业四：ssh登录，scp上传、下载，ssh秘钥登录，修改ssh server端的端口为8888然后进行登录和scp测试
+
+上传 scp /tmp/1.txt root@IP:/tmp
+下载 scp root@IP:/tmp/1.txt /tmp 
+ssh密钥登录 
+vi /etc/ssh/sshd_config  改端口号8888
+systemctl restart sshd 
+netstat -anpt |grep sshd
+ssh IP -p 端口号
+ssh-keygen
+ssh-copy-id -i id_rsa.pub  IP -p 8888 
+
+
+
+
+作业五：整理bash命令类型，验证寻找一个命令的优先级
+
+==> alias
+
+　　==> Compound Commands
+
+　　　　==> function
+
+　　　　　　==> build_in
+
+　　　　　　　　==> hash
+
+　　　　　　　　　　==> $PATH
+
+　　　　　　　　　　　　==> error: command not found
+
+验证
+hash命令
+
+[root@python1 ~]# hash -r
+
+[root@python1 ~]# hash
+
+hash: 哈希表为空
+
+
+
+[root@python1 ~]# ls
+
+ [root@python1 ~]# hash
+
+命中 命令
+
+   1 /usr/bin/ls
+
+
+
+[root@python1 ~]# ls
+
+ [root@python1 ~]# hash
+
+命中 命令
+
+   2 /usr/bin/ls
+
+
+
+
+作业六：通配符实验
+
+反引号与（）在此时都是表死获取结果
+但是一般使用（）的方式，因为反引号在多个反引号的时候无法正确指代
+
+获取当前bash 的变量
+echo $变量名
+
+echo $? 表示上一次命令的执行是否成功，0表示成功，其他表示失败
+
+3.{}表示范围
+
+4.[]表示其中内容的任意一个
+
+5.&&和||和；
+
+  命令a && 命令b    表示a成功才执行b     a不成功不执行b
+
+  命令a || 命令b      表示a不成功才执行b     a成功不执行b
+
+  命令a ；命令b；命令c  表示abc不管谁成功，三者都执行
+
+6.！表雷同和^表取非
+
+7.&  表示该命令设为后台命令
+
+8.{}表示分割
+
+9.单引号 不包含特殊含义
+
+  双引号  包含特殊含义
+
+10.*代表任意一个任意字符
+
+   ？代表一个任意字符
+
+
+
+
+

@@ -1,0 +1,207 @@
+awk
+awk [ options ] 'pattern {action}' file
+awk 参数 模式（动作） file  模式即条件  动作就是干什么，由大括号里面一条或多条语句组成。
+pattern 即模式，找谁    action 干啥
+域和记录
+filed    域，区域，字段，列
+
+$0,整行，一个记录  $1 $2 $3 $NF最后一行 $0整行
+$ 表示取
+FS 区域分隔符  awk -F 记录字段分隔符的内容
+NF 列的数量一行有多少列（区域）
+head /etc/passwd > /servers/files/awkfile.txt 
+awk -F ":" 'NR>=3&&NR<=5{print $1,$3}' /servers/files/a.txt
+字段分隔符FS 指定的值可以是一个正则表达式（匹配字符串）
+ifconfig eth1 | awk 'NR==2{print $1}'     输出inet6    为第一列
+ifconfig eth1 | awk -F "[: ]+" 'NR==2{print $2}'  输出inet6  分割完变成第二列
+RS 每个记录读入（输入）的时候的分隔符  上下分割每行
+NR 行号 awk处理的记录的数
+ORS 输出时候的分隔符
+awk使用内置变量RS来存放记录分隔符，RS表示的输入的记录分隔符，之歌值可通过BEGIN模块重新定义修改。
+awk 'BEGIN{FS=":";RS="\n"}'
+awk '{print NR,$0}' 1.txt  显示行号
+awk 'BEGIN{RS="/"}{print NR,$0}' 1.txt
+行：默认以回车换行\n，结束的.RS(行分隔符)RS表示着行的结束。
+RS为空值
+awk 'BEGIN{RS=""}{print NR,$0}' 1.txt     只会显示一行行号
+当RS值为空时，每个记录被空行或多个空行分割，同时无论FS分隔符为何值，FS同时也会被\n分割。
+sed -r 's#[:/0-9]+# #g' awkfile.txt 
+sed -r 's#[:/0-9]+# #g' awkfile.txt >count.txt 
+
+
+sort 排序
+sort 默认是升序，sort -r 降序
+sort -u 去除重复行
+
+uniq 去重
+	  -i 忽略大小写字符
+	  -c 进行计数
+	  -u 只显示唯一的行
+	
+cut   从文件文件中截取
+	  -d 后接分割字符
+	  -f 依据-d的分隔符将信息分割成数段，-f 取出第几段
+	  -c 以字符的单位取出固定字符区间
+	
+	将 PATH 变量取出，我要找出第三和第五个路径。
+	#echo $PATH | cut -d ':' -f 3,5
+	/sbin:/usr/local/bin
+	
+	将 PATH 变量取出，我要找出第三到最后一个路径。
+	echo $PATH | cut -d ':' -f 3-
+	/sbin:/usr/sbin:/usr/local/bin:/usr/X11R6/bin:/usr/games
+	
+	将 PATH 变量取出，我要找出第一到第三个路径。
+	#echo $PATH | cut -d ':' -f 1-3
+	/bin:/usr/bin:/sbin:
+ 
+	将 PATH 变量取出，我要找出第一到第三，还有第五个路径。	
+	echo $PATH | cut -d ':' -f 1-3,5
+	/bin:/usr/bin:/sbin:/usr/local/bin
+
+	
+wc	  统计
+	  -l 仅取出列，统计行数
+	  -w 仅列出多少字，统计单词出现次数
+	  -m 多少字符，统计文件的字节数
+	  wc /etc/passwd
+		 40(行数) 45（单词数）1719（字节数）
+
+求记录文件中每个单词的重复数量
+egrep -o "[a-zA-Z]+" count.txt |sort |uniq -c
+awk 'BEGIN{RS=" |\n"}{print $0}' count.txt|sort |uniq -c   空格或换行符
+awk 默认用\n 分割		  
+
+正则表达式
+实战准备
+1.调整别名
+alias grep='grep --color=auto'
+2.环境变量
+locale
+export LC_ALL=C
+3.准备例子
+vi /oldboy/old.log
+I am oldboy teacher!
+I teach linux
+
+I like badminton ball,billiard ball and chinese chess!
+my blog is http://oldboy.blog.51cto.com
+our site is http://www.etiantian.org
+my qq num is 49000448
+
+not 4900000448
+my god,i am not oldbey,but OLDBOY!
+god
+good
+goood
+gd
+
+
+4.	^代表一行的开头
+	$代表一行的结尾
+	^$  空行
+	.  代表任意一个字符
+	\  \. 就只代表点本身，转义符号，让有着特殊身份字符脱掉马甲，还原原型。 \$。
+	*  重复1个或多个前面的一个字符.  o* :o oo ooooo等等
+	.* 匹配所有字符（0或没有）。^.*以任意多个字符开头，.*$以任意多个字符结尾。
+	(.) 任意一个字符grep正则
+	
+	grep "." a.txt	
+	grep "\." a.txt                         匹配带.的
+	grep "oldb.y" a.txt		
+	grep "\.$" a.txt  						匹配以.结尾的
+	grep “.*”  a.txt						匹配所有的
+	grep "."	a.txt						匹配没有空行的	
+	
+	
+		
+	
+grep "^m" oldboy.log
+grep -n "^$" 1.log 打印空行及行号
+grep -vn "^$" 1.log 打印空行以外的及行号
+     -i 忽略大小写的不同
+	 -c 计算搜索字符串的次数           3
+	 -o 显示搜索的（只匹配输出）					   3个m
+	 -a 以文本文件的方式搜索数据
+	 -n 对匹配的内容在其行首显示行号
+	--color=auto 以特定颜色亮显示匹配关键字
+	-C  context，显示匹配字符串及其前后各num行
+	
+	[abc] 匹配字符集合内的任意一个字符[a-zA-Z],[0-9]   [a-z]所有小写字母 [A-Z]所有大写字母
+	[^abc] 匹配不包含^后的任意（任意一个）字符的内容
+	a\{n，m\} 重复n到m次，前一个重复的字符，如果用egrep/sed -r 可以去掉斜线
+	a\{n,\}  重复至少n次，前一个重复的字符。如果用egrep/sed -r 可以去掉斜线
+	a\{n\} 	 重复n次，前一个重复的字符。如果egrep/sed -r 可以去掉斜线	
+	a\{,m\}  随便重复，但是不能超过m次
+注意：egrep或sed -r 过滤一般特殊字符可以不转义
+
+grep “0\{,3\}”  oldboy.log
+grep -E "0{,3}" oldboy.log
+egrep "0{,3}" oldboy.log
+
+5.扩展正则
+			必须用 grep -E 或egrep
+			
+（1）+ 重复一个或一个以上前面的字符（和基础正则*的区别） +要求重复数量至少为1，*可以为0，所以字符串为空也可以匹配
+													基础正则*是匹配0个或多个前面的那个字符
+（2）？重复“0个或一个”前面的字符	（和基础正则.的区别）				
+		      （可以没有）				基础正则.是匹配有且只有一个字符,代表任意一个字符 
+（3）|用或的方式查符合多个条件的字符串
+（4）（）找出“用户组”字符串  分组过滤，后向引用
+
+例子：
+egrep "go+d" 1.txt
+egrep "go*d" 1.txt
+egrep "go?d" 1.txt
+egrep "go.d" 1.txt
+egrep "god|good" 1.txt 
+egrep "g(o|oo)d" 1.txt
+
+\b 取出单词边界
+grep "\boldboy\b"  oldboy.log    只取出oldboy的，oldboy1不取出
+
+
+6.sed
+
+例子：
+1.除了oldboy以外的
+vi  test.txt    --  
+test
+liyao 
+oldboy
+
+五种方法：
+grep -v oldboy test.txt
+head -2 test.txt
+sed ‘/oldboy/d’ test.txt    / / 两个斜线之间表示要过滤的内容，d表示对过滤内容采取什么动作
+sed -n /[^oldboy]/p  test.txt
+awk /[^oldboy]/ test.txt
+
+2.查看ett.txt（100行)内第20到30行内容
+seq 100>ett.txt
+											   head 取头部的几行，默认前10行
+	1.head -30 ett.txt |tail -11               tail 取尾部的最后n行，默认后10行（tail 文件）
+	2.tail -81 ett.txt |tail -11
+	3.sed -n '20,30p' ett.txt 
+ 
+sed -n '30p' ett.txt 也可以用的
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

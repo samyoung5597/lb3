@@ -1,0 +1,13 @@
+About of this project:
+_*_ coding:utf-8 _*_
+__author__:张东升
+Main:ATM + shopping
+
+
+This project start with start.py
+The core code have auth.py,card.py,log.py,login.py,manage.py,shopping.py
+The database file all of in db folder
+The log file all of in log folder
+
+Becareful....=_=
+

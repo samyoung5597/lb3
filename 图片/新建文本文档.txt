@@ -1,0 +1,293 @@
+﻿C:\Users\Computer\AppData\Local\Programs\Python
+
+
+作业1
+	跳出多层循环，三层循环，最里层，直接跳出3层，exit()
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+作业2
+	购物车程序
+	Python shopping.py
+	
+	input your salary: 5000
+	你可以买下面的东西：
+	
+	1.iphone	5800
+	2.coffer	30
+	3.book		50
+	4.condom	90
+	>>: 1
+	  买不起，打印差多少
+	 
+    >>: 2	 
+	 放入购物车，扣钱，同时打印余额。。。 4970
+	 
+	>>: 3
+	...
+	
+	>>: 4
+	
+	>>:q
+	您买了下面的东西
+	coffer 30
+	
+	你还有多少钱 300
+	bye.
+	
+	
+知识点
+	1 循环
+	2 列表
+	3 
+	 
+for i in range(10):
+    print(i)                  打印的数字0-10
+	 
+for i in range(10):			  打印的i 10次	
+    print("i")	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	
+	
+	
+for i in range(10):
+	print(i)
+	if i == 5:
+		break
+		
+else: #当循环正常结束时，走else
+		print("done")
+
+print ("done")		
+
+
+while
+死循环
+count = 0
+while True:
+	print("aa",count)
+	count += 1
+	if count == 10000000:
+		print(Count,)
+	count = 0
+	
+
+	
+需求一：还是上面的程序，但是遇到小于5的循环次数就不走了，直接跳入下一次循环
+
+1
+2
+3
+4
+for i in range(10):                 1234
+    if i<5:
+        continue #不往下走了,直接进入下一次loop
+    print("loop:", i )
+需求二：还是上面的程序，但是遇到大于5的循环次数就不走了，直接退出
+
+1
+2
+3
+4
+for i in range(10):
+    if i>5:
+        break #不往下走了,直接跳出整个loop
+    print("loop:", i )
+
+
+
+for i in range(10):
+	print("i",i)
+	
+	if i > 5:
+		for j in range(10):
+		    print("j",j)
+
+
+	
+i	0
+.	.
+.	.
+.	.
+i	6
+j	0
+.	.
+.	.
+.	.
+j	10
+i	7
+j	0
+.	
+.	
+.	10
+i	8
+.	
+.
+.
+i	9
+.
+.
+.
+i	10
+j	0
+.	.
+.	.	
+j	10
+
+
+for i in range(10):
+	print("i",i)
+	
+	if i > 5:
+		for j in range(10):
+		    if j == 3:
+			   break
+		    print("j-",j)
+
+i	0
+.	.
+.	.
+.	.
+i	6
+j-	0
+j-	1
+j-	2
+i	7
+j-	0
+j-	1
+j-	2
+i	8
+j-	0
+j-	1
+j-	2
+i	9
+j-	0
+j-	1
+j-	2
+i	10
+j-	0
+j-	1
+j-	2
+
+
+
+
+for i in range(10):
+	print("i",i)
+	
+	if i > 5:
+		for j in range(10):
+			if j == 3:
+			for k in range(10):
+				break
+		    print("j",j)
+
+print("dddd")
+
+
+
+
+
+列表变字典----输入-- 根据索引打出列表------判断输入的是否是数字--判断长度--判断输入的值和余额比大小--判断是否之前买过了---买过了将数量+1，  
+否则创建一条商品信息----扣钱--商品列表格式化----
+
+
+
+列表变字典------输入-------
+
+product_list = [['Iphone 7',5800],
+                ['Coffee',30],
+                ['Python Book',99],
+                ['news',20],
+                ['Vivo x9',2466],
+
+]
+shopping_cart = {}          #变为字典
+salary = int(input("input your salary:"))
+
+while True:
+    index = 0
+    for product in product_list:
+        print(index,product)
+        index +=1
+    choice = input(">>:").strip()
+
+    if choice.isdigit():
+        choice = int(choice)
+        if choice >= 0 and choice < len(product_list): 
+            product = product_list[choice]
+            if product[1] <= salary:
+                if product[0] in shopping_cart:     #之前买过了
+
+                    shopping_cart[product[0]][1] += 1  #[price,数量],只需要把数量+1，加入购物车
+                else:
+                    shopping_cart[product[0]] = [product[1],1]     #创建一条商品购物信息
+
+                salary -= product[1]        #扣钱
+                print("Added product" + product[0] + " into shopping cart,your current balance" + str(salary))
+            else:
+                print("买不起，产品价格是" +str(product[1]) + "你还差" + str(product[1]-salary) + "钱")
+        else:
+            print("产品不存在！")
+    elif choice == "q":
+        print("----已购买产品列表------")
+        id_counter = 1
+        total_cost = 0
+        print("id 产品 数量 单价 总价")
+        for key in shopping_cart:
+            print("%s %s %s %s %s" %(id_counter,
+                  key,
+                  shopping_cart[key][1],
+                  shopping_cart[key][0],
+                  shopping_cart[key][1]*shopping_cart[key][0]))
+            id_counter +=1
+            total_cost += shopping_cart[key][1]*shopping_cart[key][0]
+
+        print("您的总花费为:",total_cost)
+        print("您的余额为:",salary)
+        print("-----end----")
+        print(shopping_cart)
+        break
+    else:
+        print("无此选项")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

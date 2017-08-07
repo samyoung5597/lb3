@@ -1,0 +1,179 @@
+系统登录顺序：
+/etc/profile	
+/etc/profile.d/a.sh (a.sh自己建的)
+/root/.bash_profile 	
+/root/.bashrc
+/etc/bashrc
+
+/bin/bash 提供命令解释器（终端）
+直接打/bin/bash 非登录shell
+/root/.bashrc
+/etc/bashrc
+/etc/profile.d/a
+
+可将别名alias等写入以上三个文件
+
+正则表达式：
+
+grep
+	-n  只显示行号
+	-o	只显示匹配内容
+	-q  安静模式，不打印     echo $?  为0显示输出正确
+	-l 	过滤成功显示文件名，不成功无
+	-A 2 'root' /etc/passwd	过滤root所在后两行 (显示错误相关信息)
+	-B 5 'root' /etc/passwd 过滤root所在前5行
+	-C  如果匹配成功，则将匹配行及前后n行都打印出来 -color
+	-c  如果匹配成功，显示行数
+	-E  egrep
+	-i	忽略大小写
+	-v  取反
+	-w  过滤单词，（不连贯）
+	-r  递归
+
+^ 以开头的   ^b.n
+* b* 前面字符   左面的一个字符0或无穷个 ab*
+egrep + 一个或无穷个
+	 ab{3} 匹配b三次
+egrep -w 'ab{3}' a.txt 匹配单词
+egrep -w 'ab{3}$' a.txt
+			'ab{2,4}'
+? 左面字符出现0次或一次
+root123
+ROot ass
+Root_123
+r00ts
+root 123
+
+egrep
+
+*  左面的一个字符有0个或无穷个    
++  左面的一个字符有1个或无穷个
+？	左面的一个字符有0个或一个
+{n}  左面的那个字符有n个		egrep -w 'ab{3}$' a.txt 
+{n,m} 左边的字符n到m个
+{n,}  左边的字符n个到无穷个
+
+
+egrep r([abc123\/\-])t   -必须放到最后去			-在数字后有指向性，如果想要匹配的字符就是-本身，必须放到最后去[12312\-]
+egrep r[]
+[] 定义好范围取一个
+.  任意取一个
+egrep r.t a.txt  
+egrep '[]'
+egrep '[a-zA-Z]' a.txt  所有英文字母的
+跟'r[aa-zz]t'一样的
+r[0-9]{2}t  =====  r[0-9][0-9]t 
+'r[0-9]+t'    数字有一个或无穷个
+
+'^[^0-9]' 开头取反 以非数字开头的  
+
+egrep 'company(y|ies)' a.txt 或的关系
+
+
+
+        a  ∶新增， a 的后面可以接字串，而这些字串会在新的一行出现(目前的下一行)～
+        c  ∶取代， c 的后面可以接字串，这些字串可以取代 n1,n2 之间的行！
+        d  ∶删除，因为是删除啊，所以 d 后面通常不接任何咚咚；
+        i  ∶插入， i 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；
+        p  ∶列印，亦即将某个选择的资料印出。通常 p 会与参数 sed -n 一起运作～
+        s  ∶取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g 就是啦！sed -n 静态模式 
+sed -e 多个模式
+sed -i '' test 输出到文件
+sed -f '' 指定文件
+sed '3d' test 删除第三行
+sed '1,4d' test 删除1到4行
+sed '1d;4d' test 删除1行和4行
+sed '3p' test 打印第三行
+sed -n '3p' test 
+sed '3c 1111' test 覆盖第三行
+sed '3a 11111' test 第三行后追加一行
+sed '3i 111' test   第三行前插入
+
+sed '/sb.*$/d' a.txt     匹配0或没有   ========  sed '/sb/d' a.txt 
+sed '/^s/c  111' a.txt  
+
+
+sed 's/sb/SB/'  test     只改每行遇到的第一个sb
+sed 's/sb/SB/g' test	 改所有的sb
+sed '4s/sb/SB/g' test	 只改所有的sb
+sed 'aa/sb/SB/g' test	 把aa那行的sb改了
+sed '/^[0-9][a-z]+sb$/s/sb/SB/g' test   匹配一行内容所有表达
+sed -r '/^[0-9] （[a-Z]+)xsb$ /s/sb/SB/g' a.txt   扩展正则  匹配alexsb
+
+sed -r 's///g' test  定位 /换的源/换的结果/g 
+
+sed -r '\3\2\1\4/g'
+
+sed -r '###'
+sed -ri '///'
+例子：
+1.
+root123
+ROot ass
+Root_123
+r00ts
+root 123
+2.
+root123
+ROot ass
+Root_123
+r00ts
+root 123
+3.
+a
+ab
+abb
+abbb
+abbbb
+abbnbb
+abbbbbbc
+4.
+r1t
+r2t
+r3t
+r/t
+r-t
+r34t
+r34352t
+
+5.
+[root@localhost tmp]# cat test
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+
+6.
+12company12121
+21321companiesafasf
+
+7.
+1rootsb
+2tomsb
+3egon
+4alexsb
+5wupeiqisb
+6yuanhaosb
+7sb
+8sb2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

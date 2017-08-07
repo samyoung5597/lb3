@@ -1,0 +1,288 @@
+# 一 基础知识和函数：
+# 1.文件操作有哪些模式？请简述各模式的作用
+# r:读 r+根据光标位置追加写
+# w:写(覆盖) w+(增加写) 读的时候按光标位置
+# a:增加 文件不可修改  a+文件不可修改，不管光标在哪里，都在最后的位置添加(追加写) 光标默认在最后，写的时候一定是追加写读的时候seek调整
+
+# 2.s = '**hello,world!**'请使用strip方法去掉字符串两端的'*'号
+# s = '**hello,world!**'
+# print(s.strip('*'))
+
+# 3.用户输入一个任意数字n，求1-n之间所有数字中的奇数
+# if n %2 != 0:
+#     print(n)
+# 4.s = 'hskakhlkshfkskjakf',请去除s字符串中重复的字母
+# s = 'hskakhlkshfkskjakfhskakhlkshfkskjakf'
+# s1 = set('hskakhlkshfkskjakf')
+# print(s1)
+
+# 5.a=10
+#   b=20
+#   def test5(a,b):
+#      print(a,b)
+#   c = test(b,a)
+#   print(c)
+#   上述代码中,打印出来的值a,b,c分别是什么？为什么？
+# a=10
+# b=20
+# def test5(a,b):
+#     print(a,b)
+# c = test5(b,a)
+# print(c)
+# c就是运行了一个函数，它的内存地址没有值，a,b就是全局变量，就是他给的a=10,b=20
+
+# 6.s = '123.33sdhf3424.34fdg323.324',计算字符串中所有数字的和
+#   本题结果应为：123.33+3424.34+323.32
+# import re
+# s = '123.33sdhf3424.34fdg323.324'
+# m = re.findall('\d+\.*\d')
+# 7.d={'k1':'v1','k2':[1,2,3],('k','3'):{1，2，3}}
+#   请用程序实现：
+#   1）输出上述字典中value为列表的key
+#   2）如果字典中的key是一个元祖，请输出对应的value值。
+#   3）d[('k','3')]对应的value是一个什么数据类型
+
+# d={'k1':'v1','k2':[1,2,3],('k','3'):{1,2,3}}
+# # l=list(d)
+# # print(l[2])
+
+# t=tuple(d)
+# print(t)
+# t1=t[0]
+# t2=t[1]
+# t3=t[2]
+# print(d[t1])
+# print(d[t2])
+# print(d[t3])
+
+# print(type(d[t3]))  是一个集合
+# 8.如果不使用@wrapper装饰器，请在a()之前加入一句代码，达到相同的效果
+# def wrapper(func):
+#     def inner(*arg, **kwargs):
+#         func(*arg, **kwargs)
+#     return inner
+# @wrapper
+#
+# def a(arg):
+#     arg=2
+#     print(arg)
+#
+# a(11)        ##这里少了个参数吧？我先加上~~
+#就是在里面改变他程序里面改变参数，实际中为了不影响主程序，加装饰器在外面修改
+
+# 9.请处理文件7th_questions,输出所有以'T'开头的行
+# with open('7th_questions','r',encoding='utf-8')as f:
+#     data = f.readlines()
+#     print(data)
+#     for i in data:
+#         if i.startswith('T'):   #^T
+#             print(i)
+
+
+# 10.读代码，请为这段代码画流程图
+
+# 11 默写字符串对象的内置方法，越多越好
+#divmod abs set enumerate map filter reduce chr ord compile complex
+#
+# 二 面向对象
+#
+# 1.请简述类、对象、实例化、实例这些名词的含义：
+
+#类是一堆对象的集合，一个总体描述
+#对象就是一个物体大概的描述，有基本相同的特征
+#实例化就是讲对象具体化为一个真实存在的东西
+# 实例就是一种方法：属性引用，且实例本身就只有
+# 2.面向对象的三大特性是什么？
+# 3.什么是方法？类中可以定义哪几种方法？
+#方法就是函数 分类方法和静态方法和属性方法@property
+普通方法
+私有方法__
+
+# 4.什么是属性？类中可以定义哪几种属性？
+#属性就是物体自带的特征，分数据属性和函数属性
+# 5.请简述类方法和静态方法有哪些区别？
+#staticmethod  类的工具包，专门给类用的
+#
+# 6.请简述新式类和经典类的区别？
+#py2分新式类(深度优先)和经典类（广度优先），py3不分
+#super经典类要加参数，新式类不加参数
+# 7.有一个类定义：
+#     class Person：
+#         def __init__(self,name,age):
+#             self.name = name
+#             self.age = age
+#
+#     1）初始化10个不同的对象
+# class Person:
+#     def __init__(self,name,age):
+#         self.name = name
+#         self.age = age
+# p1=Person('sam',18)
+# p2=Person('lucy',16)
+# p3=Person('tom',19)
+#....
+#     2）求最高age的对象的name
+# p={'sam':18,'lucy':16,'tom':19}
+# #
+# print(max(p,key=lambda  k:p[k]))
+# 8. 模拟cs游戏
+# 人物角色分为警察和匪徒两种，定义成两个类
+#
+#
+# 所有的警察的角色都是police
+# 每个警察都有自己独有名字，生命值，武器，性别
+# 每个都可以开枪攻击敌人，切攻击目标不能是police
+# class Police:
+#     def __init__(self,name,weapon,sex,value=100,agressivity=100):
+#         self.name=name
+#         self.value=value
+#         self.weapon=weapon
+#         self.sex=sex
+#         self.aggressivity=agressivity
+#     def attack(self,enemy):
+#         enemy.life_value -= self.agreesivity
+#     def mubiao(self):
+#         pass
+
+
+
+
+# 所有的匪徒的角色都是terrorist
+# 每个匪徒都有自己独有名字，生命值，武器，性别
+# 每个都可以开枪攻击敌人，切攻击目标不能是terrorist
+#
+# class Terrorist:
+#     def __init__(self, name, weapon, sex, value=100, agressivity=100):
+#         self.name = name
+#         self.value = value
+#         self.weapon = weapon
+#         self.sex = sex
+#         self.aggressivity = agressivity
+#     def attack(self, enemy):
+#         enemy.life_value -= self.agreesivity
+
+
+# 9. 实例化一个警察，一个匪徒，警察攻击匪徒，匪徒掉血
+# p1=Police('tom','qiang','male')
+# t1=Terrorist('sam','qiang','male')
+# p1.attack(t1)
+# 10. 提取警察类和匪徒类相似之处定义成一个父类，使用继承的方式减少代码重复
+
+# class PP:
+#     def __init__(self, name, weapon, sex, value=100, agressivity=100):
+#         self.name = name
+#         self.value = value
+#         self.weapon = weapon
+#         self.sex = sex
+#         self.aggressivity = agressivity
+#     def attack(self, enemy):
+#         enemy.life_value -= self.agreesivity
+#
+# class Police(PP):
+#     def __init__(self, name, weapon, sex, value=100, agressivity=100):
+#         super().__init__(name,weapon,sex,value=100,agressivity=100)
+#     def attack(self, enemy):
+#         super().attack()
+#     def mubiao(self):
+#         pass
+#
+#
+# class Terrorist(PP):
+#     def __init__(self, name, weapon, sex, value=100, agressivity=100):
+#         super().__init__(name, weapon, sex, value=100, agressivity=100)
+#     def attack(self, enemy):
+#         super().attack()
+#     def mubiao(self):
+#         pass
+# 11
+#
+# class Base:
+#     def f1(self):
+#         self.f2()
+#
+#     def f2(self):
+#         print('...')
+#
+# class Foo(Base):
+#     def f2(self):
+#         print('9999')
+#
+# obj = Foo()
+# obj.f1()
+#
+# 问题1:面向对象中的self指的什么？内置对象
+# 问题2:运行结果并简述原因
+#结果：9999
+#实例化Foo一个对象obj,调用f1属性，传入Base里的f1方法，得到self.f2，正好本地有f2函数就输出.
+
+
+
+# 思考题：
+#     有一个类的init方法如下：
+#     class Person：
+#         def __init__(self,name,age,sex,weight):
+#             self.name = name
+#             self.sex = sex
+#             self.age = age
+#             self.weight = weight
+#     假设有100个person的对象，
+#     若两个对象的obj1,obj2的name和sex属性相同
+#     即obj1.name==obj2.name and obj1.sex==obj2.sex
+#     我们认为两个对象为同一个对象，已知一个列表中的100个对象，对这100个对象进行去重。
+#     提示：
+#         重写Person类重的两个内置方法
+#
+# 三 并发编程
+#
+# 1 线程，进程，协程的区别？
+#进程：  资源管理单位（容器）
+#线程： 最小执行单位
+#参考yield模型1.由于单线程，不能再切换2.不再有任何锁的改变
+
+# 2 GIL是什么，对于python有什么影响？
+解决线程安全
+#GIL(全局解释器锁): CPython因为存在GIL所以同一时间只有一个线程进出
+#GIL 在执行一个Py文件时，同一时间只有一个线程
+# 3 解释LOCK，RLOCL，EVENT，samphore的应用场景
+# lock同步锁  RLOCL 死锁通过递归锁解锁  EVENT 通过设定标记，开关程序 sampphore 设定能进来的线程个数
+# 4 基于对列实现一个生产者消费者模型，要求：队列内元素不能超过5个，一旦有五个元素了，生产者不再生产，其他内容   自由扩散
+# import time,random
+# import queue,threading
+#
+# q = queue.Queue()
+#
+# def Producer(name):
+#   count = 0
+#   while count <5:
+#     print("making........")
+#     time.sleep(random.randrange(3))
+#     q.put(count)
+#     print('Producer %s has produced %s baozi..' %(name, count))
+#     count +=1
+#     q.task_done()
+#     q.join()
+#     print("ok......")
+# def Consumer(name):
+#   count = 0
+#   while count <5:
+#     time.sleep(random.randrange(4))
+#     if not q.empty():
+#         data = q.get()
+#         q.task_done()
+#         q.join()
+#         print(data)
+#         print('Consumer %s has eat %s baozi...' %(name, data))
+#     else:
+#         print("-----no baozi anymore----")
+#     count +=1
+
+
+# 5 基于selectors模块实现并发聊天，退出某一个客户端不能影响其他用户
+
+
+
+
+
+
+
+

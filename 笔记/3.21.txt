@@ -1,0 +1,82 @@
+﻿arping -I eno16777736 192.168.16.47
+网络配置
+
+装ifconfig
+rpm -qf /usr/sbin/ifconfig
+或者用ip add show
+
+mtu 1500最大传输单元（用字节）
+
+route add default gw IP netmask 
+
+/etc/resolvf.conf
+/etc/hosts 本地解析文件
+1.1.1.1  www.baidu.com
+
+hostname 主机名
+hostname set-hostname python-web2
+
+ssh-keygen
+ls /root/.ssh/
+ssh-copy-id -i id_rsa python-web2
+
+ssh python-web2 -p 8888
+
+
+functionn test{}[ hostname set=hostname www;hostname;] 
+函数体	  函数名
+vim  a.sh
+test
+				{ read -p}
+
+				
+hash
+hash -r 清除
+
+元字符
+ ls [abc][a].txt  只取一个值关于a的
+ 
+[a-Z] 包括aAbB...zZ
+
+$[ ] 运算
+$( ) 同``一样
+${ } 凭借
+[] test命令
+${} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

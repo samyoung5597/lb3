@@ -1,0 +1,132 @@
+什么是正则:
+	就是一些具有特殊含义的符号对字符或字符串的一种描述方法
+	
+	生活中的正则
+		就是对某个事物的描述
+		比如描述:有4条腿
+			你可能想到的是四条腿的动物或者桌子,椅子等等
+			这就从世界上的所有事物中缩减了你的搜索范围
+		继续描述:带有靠背
+			于是排除了动物,桌子
+			只剩下椅子
+			
+	计算机里的正则,则是对字符或者字符串的描述
+	比如:所有IP 所有邮件名 所有以.mp3结尾的文件名
+	
+	
+	
+一下介绍正则中的符号 均由/etc/passwd文件做为样例
+使用grep介绍
+grep的参数也需要介绍
+	-n
+	-o
+	-p
+	-q
+	-l
+	-A
+	-B
+	-N N代表一个数字
+	--color
+	-c
+	-E
+	-i
+	-h
+	-w
+	
+
+grep家族
+	grep
+	fgrep
+	pgrep
+	egrep
+
+	正则介绍
+
+	  ^	行首
+	  $	行尾
+	  .	除了换行符以外的任意单个字符
+	  *	前导字符的零个或多个
+	  .*	所有字符
+	  []	字符组内的任一字符
+	  [^]	对字符组内的每个字符取反(不匹配字符组内的每个字符)
+	  ^[^]	非字符组内的字符开头的行
+	  [a-z] 小写字母
+	  [A-Z] 大写字母
+	  [a-Z] 小写和大写字母
+	  [0-9] 数字
+	  \<	单词头 单词一般以空格或特殊字符做分隔,连续的字符串被当做单词
+	  \>	单词尾
+
+	扩展正则 sed  加 -r 参数 或转义
+		 grep 加 -E 或 egrep 或转义
+		 AWK  直接支持 但不包含{n,m}
+			  可以使用--posix支持
+				[root@seker ~]# awk '/ro{1,3}/{print}' /etc/passwd
+				[root@seker ~]# awk --posix '/ro{1,3}/{print}' /etc/passwd
+				
+	  sed -n '/roo\?/p' /etc/passwd  
+	  sed -rn '/roo?/p' /etc/passwd
+	  ? 前导字符零个或一个
+	  + 前导字符一个或多个
+	  abc|def abc或def
+	  a(bc|de)f abcf 或 adef
+	  x\{m\}   x出现m次
+	  x\{m,\}  x出现m次至多次(至少m次)
+	  x\{m,n\} x出现m次至n次
+	
+posix定义的字符分类
+
+       [:alnum:]  Alphanumeric characters.
+					匹配范围为 [a-zA-Z0-9]
+       [:alpha:]  Alphabetic characters.
+					匹配范围为 [a-zA-Z]
+       [:blank:]  Space or tab characters.
+					匹配范围为 空格和TAB键
+       [:cntrl:]  Control characters.
+					匹配控制键 例如 ^M  要按 ctrl+v 再按回车 才能输出
+       [:digit:]  Numeric characters.
+					匹配所有数字 [0-9]
+       [:graph:]  Characters  that  are  both printable and visible.  (A space is print-
+                  able, but not visible, while an a is both.)
+					匹配所有可见字符 但不包含空格和TAB 就是你在文本文档中按键盘上能用眼睛观察到的所有符号
+       [:lower:]  Lower-case alphabetic characters.
+					小写 [a-z]
+       [:print:]  Printable characters (characters that are not control characters.)
+					匹配所有可见字符 包括空格和TAB
+					能打印到纸上的所有符号
+       [:punct:]  Punctuation characters (characters that are not letter,  digits,  con-
+                  trol characters, or space characters).
+					特殊输入符号  +-=)(*&^%$#@!~`|\"'{}[]:;?/>.<,
+					注意它不包含空格和TAB
+					这个集合不等于^[a-zA-Z0-9]
+       [:space:]  Space characters (such as space, tab, and formfeed, to name a few).
+
+       [:upper:]  Upper-case alphabetic characters.
+					大写 [A-Z]
+       [:xdigit:] Characters that are hexadecimal digits.
+					16进制数 [0-f]
+
+使用方法:
+[root@seker ~]# grep --color '[[:alnum:]]' /etc/passwd
+
+
+
+正则表达式及字符处理
+1．使用grep显示出/usr/share/dict/words文件中，例如显示出所有含有fish的行：
+2．使用grep显示出/usr/share/dict/words文件中，输出任何包含fish的所有行，还要输出紧接着这行的上下各两行的内容：
+3. 使用grep显示出/usr/share/dict/words文件中，来显示出在words文件中有多少行含有fish。
+4．使用grep显示出/usr/share/dict/words文件中，显示出那些行含有fish，并将行号一块输出，看一看starfish在哪行
+5．想列出/usr/share/dict/words中包含先有字母t然后有一个元音字母，之后是sh的单词，命令为
+6．在/usr/share/dict/words文件中，创建可以符合abominable，abominate，anomie和atomize的正则表达式，但是不要选到别的单词
+7．在/usr/share/dict/words文件中包含多少先有字母t然后有一个元音字母，之后是sh的单词，只输出数量
+8．列出/usr/share/dict/words中刚好包含16个字母的单词 
+9．我们将要使用/usr/share/doc文件夹来完成我们的下几个任务
+列出/usr/share/doc/bash-* 文件夹中，所有包含单词expansion的文件 
+10．显示出“Linux”在/usr/share/doc/bash-2.05b文件夹的文件中出现的次数
+
+
+
+
+
+
+

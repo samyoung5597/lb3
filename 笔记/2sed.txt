@@ -1,0 +1,380 @@
+sed
+流编辑器 stream editer,是以行为单位的处理程序
+
+sed 流编辑器 stream editer
+
+语法
+   sed [options] 'command' in_file[s]
+options 部分
+	-n
+	-e
+	-i
+	-f
+command 部分
+	'[地址1,地址2] [函数] [参数(标记)]'
+	
+定址的方法 1.数字 2.正则
+	数字
+	   十进制数
+		 1 	单行   
+		 1,3	范围 从第一行到第三行
+		 2,+4 	匹配行后若干行
+		 4,~3   从第四行到下一个3的倍数行
+		 2~3	第二行起每间隔三行的行
+		 $	尾行
+		 1!	除了第一行以外的行
+	正则
+	   正则必须用//包裹起来
+	   扩展正则需要用 -r 参数或转义
+
+	
+		
+	正则介绍
+
+	  ^	行首
+	  $	行尾
+	  .	除了换行符以外的任意单个字符
+	  *	前导字符的零个或多个
+	  .*	所有字符
+	  []	字符组内的任一字符
+	  [^]	对字符组内的每个字符取反(不匹配字符组内的每个字符)
+	  ^[^]	非字符组内的字符开头的行
+	  [a-z] 小写字母
+	  [A-Z] 大写字母
+	  [a-Z] 小写和大写字母
+	  [0-9] 数字
+	  \<	单词头 单词一般以空格或特殊字符做分隔,连续的字符串被当做单词
+	  \>	单词尾
+
+	扩展正则 加 -r 参数 或转义
+	  sed -n '/roo\?/p' /etc/passwd  
+	  sed -rn '/roo?/p' /etc/passwd
+	  ? 前导字符零个或一个
+	  + 前导字符一个或多个
+	  abc|def abc或def
+	  a(bc|de)f abcf 或 adef
+	  x\{m\}   x出现m次
+	  x\{m,\}  x出现m次至多次(至少m次)
+	  x\{m,n\} x出现m次至n次
+
+
+函数
+	增删改
+	  a 后插
+	  c 替换
+	  i 前插
+	  d 删除
+	输入输出
+	  p 打印匹配的行 一般和 -n 参数连用,以屏蔽默认输出
+	  r 从文件中读入
+	  w 写入到文件中
+	控制流
+	  !  命令取反 例: 1!d 删除第一行以外的行
+	  {} 命令组合 命令用分号分隔 {1h;G} 可以理解为 -e 参数的另一种写法
+
+	  =  打印行号(输入行的号码,而非处理的次数行号) 例如： sed -n '2{=;p}' infile
+	  n  读入下一行到模式空间 例:'4{n;d}' 删除第5行
+	  N  而是追加下一行到模式空间，再把当前行和下一行同时应用后面的命令
+
+
+
+	替换
+	  s 字符串替换 s/old/new/
+	
+	$ sed -n 's/root/ABCDEF/p' /etc/passwd
+	
+ABCDEF:x:0:0:root:/root:/bin/bash
+
+	operator:x:11:0:operator:/ABCDEF:/sbin/nologin
+
+	$ sed -n 's/root/ABCDEF/gp' /etc/passwd
+	
+	ABCDEF:x:0:0:ABCDEF:/ABCDEF:/bin/bash
+
+	operator:x:11:0:operator:/ABCDEF:/sbin/nologin
+
+	$ sed -n 's/root/ABCDEF/2p' /etc/passwd
+
+	root:x:0:0:ABCDEF:/root:/bin/bash
+
+	$ sed -n 's/root/ABCDEF/3p' /etc/passwd
+
+	root:x:0:0:root:/ABCDEF:/bin/bash
+
+	$ sed -n 's/root/ABCDEF/gp' /etc/passwd
+
+	ABCDEF:x:0:0:ABCDEF:/ABCDEF:/bin/bash
+
+	operator:x:11:0:operator:/ABCDEF:/sbin/nologin
+	
+	$
+		  
+
+	\(\)	保存被匹配的字符 以备反向引用\N时使用 最多9个标签 标签顺序从左至右
+	&	替换时使用,在不定义标签时使用(反向引用)
+
+
+	试做：
+ 	 
+	 删除第一个单词
+
+	 删除最后一个单词
+
+	 将第一个单词和最后一个单词兑换位置
+
+	
+	y 字符替换(变形)
+
+工作模式 模式空间和保持空间介绍
+
+	
+	$ sed  '1{p;p}' a.txt
+
+	11111111
+
+	11111111
+
+	11111111
+
+	22222222
+
+	33333333
+
+	44444444
+
+	55555555
+
+	66666666
+
+	$
+
+	
+	置换 模式空间和保持空间(暂存空间)
+	  h 把模式空间内容覆盖到保持空间中
+	  H 把模式空间内容追加到保持空间中
+	  g 把保持空间内容覆盖到模式空间中
+	  G 把保持空间内容追加到模式空间中
+	  x 交换模式空间与保持空间的内容
+
+	# cat test.sh 
+	1111111
+	2222222	
+	3333333
+	4444444
+	# sed  '{1h;2,3H;4G}'  ./test.sh 
+	1111111
+	2222222
+	3333333
+	4444444
+	1111111
+	2222222
+	3333333
+	＃ sed  '{1h;2x;3g;$G}'  ./test.sh 
+	1111111
+	1111111
+	2222222
+	4444444
+	2222222
+	# 
+
+	
+	试做题
+
+	将第一行插入到每个偶数行的后面
+
+	$ sed  '1h;0~2G' a.txt
+
+	11111111
+
+	22222222
+
+	11111111
+
+	33333333
+
+	44444444
+
+	11111111
+
+	55555555
+
+	66666666
+
+	11111111
+
+	$
+
+	颠倒输出
+
+	$ sed '1!G;h;$!d' rev.txt
+
+	xyz
+
+	def
+
+	abc
+
+	$
+	  
+
+脚本方法
+     -f 参数 引用脚本(脚本的末尾不能有空格制表符或其他文本)
+	# cat sed.sh 
+	2,4d
+	s/777/seker/
+	s/999/seker&seker/
+	# sed -f sed.sh test.txt 
+	1111111
+	5555555
+	6666666
+	seker7777
+	8888888
+	seker999seker9999
+	#
+
+  在脚本中指明解释器为sed
+	# cat sed.sh 
+	#!/bin/sed -f
+	2,4d
+	s/777/seker/
+	s/999/seker&seker/
+	# ./sed.sh test.txt 
+	1111111
+	5555555
+	6666666
+	seker7777
+	8888888
+	seker999seker9999
+	# 
+
+高级流控命令 b分支 t测试
+	分支命令用于无条件转移,测试命令用于有条件转移
+
+分支 branch
+   跳转的位置与标签相关联
+	如果有标签则跳转到标签所在的后面行继续执行
+	如果没有标签则跳转到脚本的结尾处.
+   标签 以冒号开始后接标签名 不要在标签名前后使用空格
+跳转到标签指定位置
+[root@stu254 ~]# grep seker /etc/passwd
+seker:x:500:500::/home/seker:/bin/bash
+[root@stu254 ~]#
+[root@stu254 ~]# grep seker /etc/passwd |sed ':top;s/seker/blues/;/seker/b top;s/5/555/' 
+blues:x:55500:500::/home/blues:/bin/bash
+[root@stu254 ~]# 
+
+命令分析:让单次替换(cmd1)循环执行,直到条件不满足
+:top; 定义一个top标签
+s/seker/blues/; cmd1
+/seker/b top; 如果模式匹配则跳转到top标签
+s/5/555/ 当上一条模式不匹配时,既会继续执行这一条
+
+选择执行
+[root@stu254 ~]#  grep 'seker' /etc/passwd |sed 's/seker/blues/;/seker/b end;s/5/555/;:end;s/5/666/'
+blues:x:66600:500::/home/seker:/bin/bash
+[root@stu254 ~]# 
+
+zorro:x:501:501::/home/zorro:/bin/bash
+[root@stu254 ~]#  grep 'zorro' /etc/passwd |sed 's/seker/blues/;/seker/b end;s/5/555/;:end;s/5/666/'
+zorro:x:6665501:501::/home/zorro:/bin/bash
+[root@stu254 ~]# 
+
+命令分析: 执行cmd1,再去模式匹配,成功则跳转到cmd3开始执行,否则(模式不匹配)会按命令顺序逐个执行
+s/seker/blues/; cmd1
+/seker/b end;
+s/5/555/; cmd2
+:end;
+s/5/666/ cmd3
+
+另一种选择执行
+[root@stu254 ~]#  grep 'seker' /etc/passwd |sed 's/seker/blues/;/seker/b end;s/5/555/;b;:end;s/5/666/'
+blues:x:66600:500::/home/seker:/bin/bash
+
+[root@stu254 ~]#  grep 'zorro' /etc/passwd |sed 's/seker/blues/;/seker/b end;s/5/555/;b;:end;s/5/666/'
+zorro:x:55501:501::/home/zorro:/bin/bash
+[root@stu254 ~]# 
+
+命令分析: 执行cmd1;模式匹配cmd2成功则执行cmd3;否则执行cmd2,再跳转到脚本末尾 
+s/seker/blues/; cmd1
+/seker/b end;
+s/5/555/;  cmd2
+b;
+:end;
+s/5/666/ cmd3
+
+
+测试命令,如果前一个替换命令执行成功则跳转到脚本末尾 (case结构)
+[root@stu254 ~]#  grep 'seker' /etc/passwd |sed 's/seker/ABC/;t;s/home/DEF/;t;s/bash/XYZ/'
+ABC:x:500:500::/home/seker:/bin/bash
+
+[root@stu254 ~]#  grep 'zorro' /etc/passwd |sed 's/seker/ABC/;t;s/home/DEF/;t;s/bash/XYZ/'
+zorro:x:501:501::/DEF/zorro:/bin/bash
+[root@stu254 ~]#
+
+与标签关联,跳转到标签位置
+[root@stu254 ~]#  grep 'seker' /etc/passwd |sed 's/seker/ABC/;t end;s/home/DEF/;t;:end;s/bash/XYZ/'
+ABC:x:500:500::/home/seker:/bin/XYZ
+[root@stu254 ~]#
+
+[seker@seker ~]$ grep 'zorro' /etc/passwd |sed 's/seker/ABC/;t end;s/home/DEF/;t;:end;s/bash/XYZ/'
+zorro:x:501:501::/DEF/zorro:/bin/bash
+
+[seker@seker ~]$
+
+
+
+
+Sed作业：以/etc/passwd文件为模板
+
+1，删除文件每行的第一个字符。
+
+2，删除文件每行的第二个字符。
+
+3，删除文件每行的最后一个字符。
+
+4，删除文件每行的倒数第二个字符。
+
+5，删除文件每行的第二个单词。
+
+6，删除文件每行的倒数第二个单词。
+
+7，删除文件每行的最后一个单词。
+
+8，交换每行的第一个字符和第二个字符。
+
+9，交换每行的第一个字符和第二个单词。
+
+10，交换每行的第一个单词和最后一个单词。
+
+11，删除一个文件中所有的数字。
+
+12，删除每行开头的所有空格。
+
+13，用制表符替换文件中出现的所有空格。
+
+14，把所有大写字母用括号（）括起来。
+
+15，打印每行3次。
+
+16，隔行删除。
+
+17，把文件从第22行到第33行复制到第56行后面。
+
+18，把文件从第22行到第33行移动到第56行后面。
+
+19，只显示每行的第一个单词。
+
+20，打印每行的第一个单词和第三个单词。
+
+21，将格式为    mm/yy/dd    的日期格式换成   mm；yy；dd
+
+22, a.txt内容
+    ABC
+    DEF
+    XYZ
+    通过SED实现tac命令
+    tac a.txt
+    XYZ
+    DEF
+    ABC
+

@@ -1,0 +1,215 @@
+#1.32   8<<2等于？
+#2. 通过内置函数计算5除以2的余数  divmod(5,2)
+#3.s=[1,"h",2,"e",[1,2,3],"l",(4,5),"l",{1:"111"},"o"],将s中的5个字符提取出来并拼接成字符串
+# s=[1,"h",2,"e",[1,2,3],"l",(4,5),"l",{1:"111"},"o"]
+# s1=s[1::2]
+# print(s1)
+# s2=(s1[0]+s1[1]+s1[2]+s1[3]+s1[4])
+# print(s2)
+#4.  判断"yuan"是否在[123,(1,"yuan"),{"yuan":"handsome"},"yuanhao"],如何判断以及对应结果？
+# l=[123,(1,"yuan"),{"yuan":"handsome"},"yuanhao"]
+# if 'yuan' in l:
+#     print('ok')
+# else:
+#     print('fault')
+#所以不再的兄弟,不再列表的一层结构里
+#5.l=[1,2,3]
+   # l2=l.insert(3,"hello")
+   # print(l2)
+   # 执行结果并解释为什么？通过内置函数计算5除以2的余数 
+# l=[1,2,3]
+# l2=l.insert(3,'hello')
+# print(l)
+# print(l2)
+# #它是插入了l中3的位置后面hello字符串，l2中并没有元素
+#6.
+# a=[1,2,[3,"hello"],{"egon":"aigan"}]
+# b=a[:]
+#
+# a[0]=5
+# a[2][0]=666
+#
+# print(a)
+# print(b)
+# #这个就是传说中的深浅拷贝。浅拷贝字如其意，只是浅浅拷贝一层，只拷贝一层数据。
+#7.
+#使用文件读取，找出文件中最长的行的长度（用一行代码解决）？
+# with open('file',encoding='utf8',mode='r'):
+#     print(len(max(lines)))
+
+#8.
+# def add(s, x):
+#     return s + x
+# def generator():
+#     for i in range(4):
+#         yield i
+#
+# base = generator()
+# for n in [1, 11]:
+#     base = (add(i, n) for i in base)
+#     print(n)
+# print(list(base))
+#先走base=generator()，找def generator()生成器卡在那里等待传值，下面for循环传值给n,一次输出1和11，然后走add函数接受传
+#值并返回11,22,然后generator函数内的生成器每次接受值将保存一次，从0-3,每次去执行add函数将得到的值保存以list输出
+
+#9.   hello.py (gbk方式保存)：
+   # ＃coding：GBK
+   # print(“老男孩”)
+   #
+   # 如果用py2，py3下在cmd下运行回报错吗？为什么并提出解决方案？ （编码）
+# content = open('hello.py',encoding='utf8',mode='r')
+# 加上encoding='utf8'
+
+#10 通过函数化编程实现5的阶乘
+# def j(x):
+#     if x ==1 or x ==0:
+#         return 1
+#     else:
+#         return x*j(x-1)
+#
+# print(j(5))
+
+#11.打菱形
+
+# 12
+# 		def outer():
+# 	        count = 10
+# 	        def inner():
+# 	            count = 20
+# 	            print(count)
+# 	        inner()
+# 	        print(count)
+#         outer()
+#         （1）分析运行结果？
+#         （2）如何让两个打印都是20
+# def outer():
+# 	count = 10
+# 	def inner():
+# 	    count = 20
+# 	    print(count)
+# 	inner()
+# 	print(count)
+# outer()
+#(1)def定义函数先不走到outer(),再找def outer()再找def inner() count=20输出，在执行count=10输出
+#(2)把外层的count=10改成count=20
+#13. 输入一个年份，判断是否是闰年？
+
+# year = input('请输入你的年份:')
+# if year % 4 == 0:
+#     print('ok')
+
+#14 任意输入三个数，判断大小？
+# a=input('input1:')
+# b=input('input2:')
+# c=input('input3:')
+#
+# s1= a if a>b else b
+# s2= s1 if s1>c else c
+# print(s2)
+
+#15 求s=a+aa+aaa+aaaa+aa...a的值，其中a是一个数字。例如2+22+222+2222+22222，几个数相加以及a的值由键盘控制
+
+
+#16.
+	# 请问程序有无bug，怎么解决？
+# f = open("a")
+# while 1:
+#     choice = input("是否显示:[Y/N]:")
+#     if choice.upper() == "Y":
+#         for i in f:
+#             print(i)
+#     else:
+#         break
+
+#有bug1.没有关闭文件   2.没有声明打开文件的编码和格式
+#17.
+# def foo():
+#     print('hello foo')
+#     return ()
+# def bar():
+#     print('hello bar')
+# （1）为这些基础函数加一个装饰器，执行对应函数内容后，将当前时间写入一个文件做一个日志记录。
+# （2）改成参数装饰器，即可以根据调用时传的参数决定是否记录时间，比如 @ logger(True)
+# import time
+# def logging(func):
+#     def wrapper():
+#         func()
+#         with open('aa', 'w+', encoding='utf8') as f_write:
+#             f_write.write(str(time.time()))
+#     return wrapper
+# @logging
+# def foo():
+#     print('hello foo')
+#     return ()
+# @logging
+# def bar():
+#     print('hello bar')
+# foo()
+# bar()
+
+# import time
+# def logger(type):
+#     def logging(func):
+#         def wrapper(*args,**kwargs):
+#             if type == 'True':
+#                 func()
+#                 with open('aa', 'w+', encoding='utf8') as f_write:
+#                     f_write.write(str(time.time()))
+#
+#             else:
+#                 func()
+#         return wrapper
+#     return logging
+#
+# @logger(type='True')
+# def foo():
+#     print('hello foo')
+#     return ()
+# foo()
+
+
+
+
+#18.三次登陆锁定：要求一个用户名密码输入密码错误次数超过三次锁定？
+# f_read = open('username')
+# f_write = open('lock','a+',encoding='utf-8')
+# flag = True
+# dic_list = {}
+# count = 0
+# while flag and count < 3:
+#     user = input('输入用户名：')
+#     pwd = input('输入密码：')
+#     f_read.seek(0)
+#     f_write.seek(0)
+#     for i in f_write:
+#         if user == i:
+#             print('用户名已经锁定了！找管理人员给你解锁')
+#             break
+#     else:
+#         for i in f_read:
+#             username,pwds = i.strip().split(' ')
+#             if username ==user :
+#                 if pwds == pwd :
+#                     print('login 成功！')
+#
+#                     flag = False
+#                     break
+#                 else:
+#                     if username in dic_list:
+#                         dic_list[username] += 1
+#                     else:
+#                         dic_list[username] = 1
+#                         print('你输入的用户或密码错误')
+#                         count = 1
+#             else:
+#                 if count == 0:
+#                     print("你输入的用户不存在.....")
+#         for i in dic_list:
+#             if dic_list[i] == 3:
+#                 count = 3
+#                 break
+# if flag:
+#     print('该用户密码输入三次错误，已被锁定，请联系管理员')
+#     f_write.write(user)
+# f_read.close()
+# f_write.close()

@@ -1,0 +1,134 @@
+结论: 
+比较数字,使用(( ))
+其他测试使用 [[ ]]
+包含数字比较的混合测试,使用[[ expr1 && expr2 ]] (( expr1 || expr2 ))
+
+两个文件的比较
+FILE1 -ef FILE2
+测试两个文件是否是相同的inode
+有时为了找到同一个INODE号的文件 更倾向于使用 find 命令的 -inum 或 --samefile
+
+FILE1 -nt FILE2
+FILE1 is newer (modification date) than FILE2
+
+FILE1 -ot FILE2
+FILE1 is older than FILE2
+
+
+while
+
+while(条件)
+do
+动作
+done
+
+do ：永远为真,死循环
+
+while：
+do
+	free
+	sleep 0.5
+	clear
+done
+
+echo -e 识别\n
+
+break 跳出本层循环机制
+continue 跳出本次循环
+
+for循环
+for i in {1..100}
+do 
+	echo $i
+done
+
+ctrl+v
+i  shuru#
+esc
+
+`ls /boot`
+for i in `ls /boot`
+do 	
+    echo $i 
+done  
+
+检查本地网络空闲地址
+for i in {1..253}
+do
+    ping 192.168.16.$i &> /dev/null
+    if [ $? -ne 0 ]
+        then
+            echo "192.168.16.$i is available"
+    else
+	        echo "192.168.16.$i is unavailable"
+	fi
+done
+
+case
+
+
+
+function abc( ){
+    echo 'aaa';
+	echo 'bbb';
+	
+}
+abc 
+
+function install(){
+yum install ...;
+if []
+}
+
+funciton start(){
+    echo '----';
+	return 1
+}
+start 
+if [ $1 ='install' ]
+then
+    install
+elif [ "$1" = 'start' ]
+then
+    start
+else 
+    echo 'cmd not find'
+
+mv 1.sh  /usr/bin/nginx
+nginx start  
+
+crontab -e -u root 
+
+* * * * * echo `date +%F_%T` >> /tmp/test.log 
+					 天   时间  %N 秒
+tail -f var/log/cron 
+
+lsof -i:80
+
+
+作业：
+1.自动部署脚本
+2.监控内存超过80%（加计划任务），要发送邮件
+
+
+
+写一个输入用户名，密码执行命令的脚本。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

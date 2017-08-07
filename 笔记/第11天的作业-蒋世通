@@ -1,0 +1,148 @@
+开发脚本自动部署及监控
+    1.编写脚本自动部署反向代理、web、nfs；
+    	要求：
+    		I、部署nginx反向代理三个web服务，调度算法使用加权轮询；
+    		II、所有web服务使用共享存储nfs，保证所有web都对其有读写权限，保证数据一致性；
+    2.编写监控脚本，监控集群内所有服务存活状态，内存、磁盘剩余率检测，异常则发送报警邮件
+    3.编写计划任务，定时运行监控脚本，完成监控操作
+
+1.
+主机
+vim  nginx1.sh 
+#!/bin/bash
+
+#关闭防火墙,selinux
+setenforce 0
+systemctl stop firewalld
+#安装nginx包
+if [ -z /etc/nginx ]
+    then
+        yum -y install epel-release &> /dev/null
+        yum -y install nginx &> /dev/null
+else
+     systemctl restart nginx
+#修改主机名
+read -p 'please input your web1_ip: ' ip1
+read -p 'please input your web2_ip: ' ip2
+read -p 'please input your web3_ip: ' ip3
+
+echo "${ip1}" web1 >> /etc/hosts
+echo "${ip2}" web2 >> /etc/hosts
+echo "${ip3}" web3 >> /etc/hosts
+#配置主机nginx
+msg='upstream meiseil { server ${ip1};server ${ip2};server ${ip3}:}'
+
+sed -ri "/^http/a $msg" /etc/nginx/nginx.conf
+sed -ri "/^ *location \/{$/a proxy_pass http://meiseil;}"
+
+#装nfs
+rpm -q nfs-utils &>/dev/null
+if [  $? -eq 0 ]
+    then
+        yum -y install nfs-utils rpcbind
+        mkdir /share
+        mkfs.ext4 /dev/sdb
+        mount /dev/sdb1 /share
+        chmod -R o+x /share
+        enable nfs-server.service
+        enable rpcbind.service
+        systemctl start rpcbind.service &>/dev/null
+        systemctl start nfs-server.service &>/dev/null
+else
+
+#检查nfs
+touch /tmp/nfs.log
+showmount -a > /tmp/nfs.log
+
+
+
+其他台（一台为例）
+vim nginx2.sh 
+
+#关闭防火墙,selinux
+setenforce 0
+systemctl stop firewalld
+
+#安装nginx包
+if [ -z /etc/nginx ]
+    then
+        yum -y install epel-release &> /dev/null
+        yum -y install nginx &> /dev/null
+else
+     systemctl restart nginx
+
+read -p 'please input your web1_ip: ' ip1
+
+sed -ri "/^ *location \/{ root /var/www/html;index index.html;}"
+
+
+#安装nfs
+if [  $? -eq 0 ]
+    then
+        yum -y install nfs-utils rpcbind
+        mkdir /share
+        mkfs.ext4 /dev/sdb
+        mount /dev/sdb1 /share
+        chmod -R o+x /share
+        enable nfs-server.service
+        enable rpcbind.service
+        systemctl start rpcbind.service &>/dev/null
+        systemctl start nfs-server.service &>/dev/null
+else
+    systemctl restart nfs-server.service &>/dev/null
+    systemctl restart rpcbind.service &>/dev/null
+
+#输入IP，挂载
+read -p 'please input your web1_ip: ' ip1
+touch /tmp/nfs.log
+showmount -e $ip1 > /tmp/nfs.log
+mount -t nfs $ip1:/share /var/www/html
+
+
+
+
+	
+2.	
+ps aux |grep  'nfs' |grep -v 'grep' &>/dev/null
+if [ $? -ne 0 ]
+then
+    msg="time:$(date +$F_$T)
+        Guys please restart nfs"
+    echo $msg
+    /usr/bin/mail $msg
+    systemctl restart nfs
+else
+    echo 'nfs is ok'
+fi
+
+ps aux |grep  'nginx' |grep -v 'grep' &>/dev/null
+if [ $? -ne 0 ]
+then
+    msg="time:$(date +$F_$T)
+        Guys please restart nginx"
+    echo $msg
+    /usr/bin/mail $msg
+    systemctl restart nginx
+else
+    echo 'nginx is ok'
+fi
+
+
+3.	
+crontab -e 	
+
+* */6 * * * /root/check.sh
+	
+	
+博客地址：
+	
+http://www.cnblogs.com/jiangshitong/p/6619165.html	
+	
+	
+	
+	
+	
+	
+	
+	
+	

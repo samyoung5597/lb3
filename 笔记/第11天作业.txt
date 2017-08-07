@@ -1,0 +1,27 @@
+作业一：整理博客，内容包含awk、变量、运算符、if多分支
+作业二：awk文本处理
+打印uid在30~40范围内的用户名。
+awk  -F: '$3 >= 30 && $3 <= 40{print $1}' test1
+打印第5-10行的行号和用户名
+awk -F: 'NR>=5 && NR<=10{print $1,NR}' test1
+
+打印奇数  awk -F: 'NR%2==1{print $1,NR}' test1
+
+打印偶数行     awk -F: 'NR%2==0{print $1,NR}' test1
+
+打印d字段数大于5的行    awk -F: 'NR>=5{print $5,NR}' test1
+
+打印UID不等于GID的用户名    awk -F: '$3!=$4{print $1,NR}' test1
+
+打印没有指定shell的用户   
+awk -F: '$NF!="/bin/bash"{print $1}' test1
+
+作业三：shell脚本编写
+自动部署、初始配置、并启动nginx反向代理服务
+自动部署、初始配置、并启动三台web
+监控脚本：监控每台机器的内存使用率>70%,则输出报警信息
+	(思路提示：
+		[root@www ~]# ((80>70))
+		[root@www ~]# echo $?
+		0
+	）

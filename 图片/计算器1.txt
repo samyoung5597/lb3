@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+import re
+def cheng_and_chu(arg):			#计算乘除
+    a = arg[0]				#把传入的列表中第0个元素赋值给a
+    m = re.search('\d+\.*\d*[\*\/]+[\+\-]?\d+\.*\d*', a)	#利用正则表达式的查找字符串功能匹配val中的算数符赋值给m
+    if not m:					#如果m中没有乘除
+        return					#结束函数返回这个m中的值
+    content = re.search('\d+\.*\d*[\*\/]+[\+\-]?\d+\.*\d*', a).group()	#利用正则表达式的查找字符串功能匹配a中的算数符，并使用group获取分组赋值给content
+    if len(content.split('*'))>1:		#将content中的组以*分割，分割后的字符串长度大于1
+        n1,n2 = content.split('*')		#将content中的组以*分割，分割后的两部分分别赋值给n1，n2
+        value = float(n1) * float(n2)	#将n1,n2转换为浮点数，并相乘，结果赋值给value
+    else:
+        n1,n2 = content.split('/')
+        value = float(n1) / float(n2)
+    qianzhui,houzhui = re.split('\d+\.*\d*[\*\/]+[\+\-]?\d+\.*\d*', a, 1)		#用正则中的分割方法，吧val中的值以\d+\.*\d*[\*\/]+[\+\-]?\d+\.*\d*分割，并将分割后的值分别赋值给qianzhi，后缀
+    new_str = "%s%s%s"%(qianzhui,value,houzhui)		#将字符串重新格式化拼接
+    arg[0] = new_str								#讲新的字符串复制给arg中的第0个元素
+    cheng_and_chu(arg)								#继续运行乘除函数
+
+def jia_and_jian(arg):			#计算加减
+    while True:
+        if arg[0].__contains__('+-') or arg[0].__contains__("++") or arg[0].__contains__('-+') or arg[0].__contains__("--"):	#如果arg的第0个元素是'+-','--','++','-+'
+            arg[0] = arg[0].replace('+-','-')	#将-替换掉+-
+            arg[0] = arg[0].replace('++','+')	#将+替换掉++
+            arg[0] = arg[0].replace('-+','-')	#将-替换掉-+
+            arg[0] = arg[0].replace('--','+')	#将+替换掉--
+        else:
+            break
+    if arg[0].startswith('-'):				#如果arg的第0个元素是以-开头
+        arg[1] += 1							#arg的第一个元素自加1
+        arg[0] = arg[0].replace('-','&')
+        arg[0] = arg[0].replace('+','-')
+        arg[0] = arg[0].replace('&','+')#将-变+，+变-
+        arg[0] = arg[0][1:]#将arg中第0个元素中前面多出来的符号去掉
+    a = arg[0]
+    m = re.search('\d+\.*\d*[\+\-]{1}\d+\.*\d*', a)
+    if not m:
+        return
+    content = re.search('\d+\.*\d*[\+\-]{1}\d+\.*\d*', a).group()
+    if len(content.split('+'))>1:
+        n1, n2 = content.split('+')
+        value = float(n1) + float(n2)
+    else:
+        n1, n2 = content.split('-')
+        value = float(n1) - float(n2)
+    before, after = re.split('\d+\.*\d*[\+\-]{1}\d+\.*\d*', a, 1)
+    new_str = "%s%s%s" % (before,value,after)
+    arg[0] = new_str
+    jia_and_jian(arg)
+
+def jisuan(sr):						#计算函数
+    new_sr = [sr.strip('()'),0]		#将传入的值两边括号去掉，并组成列表赋值给new_sr
+    cheng_and_chu(new_sr)			#调用乘除函数
+    jia_and_jian(new_sr)			#调用加减函数
+    if divmod(new_sr[1],2)[1] == 1:	#将运算后的传回的列表中的第1个元素处于2，除后得到的元组第1个元素等于1的话，
+        jieguo = float(new_sr[0])	#将运算后传回的列表中的第0个元素转化为浮点型，赋值给jieguo
+        jieguo = jieguo * -1		#并将jieguo乘-1
+    else:						    #如果不等于1
+        jieguo = float(new_sr[0])	#将运算后传回的列表中的第0个元素转化为浮点型，赋值给jieguo
+    return jieguo					#结束函数返回jieguo
+
+def kuohao(sr):						#去除括号函数
+    flag = True						#设置一个标志位
+    while flag:
+        n = re.search("\([^()]+\)",sr)		#找出sr中最里面的括号，赋值给n
+        if n:
+            sub_sr = n.group()				#截取n中第一个括号
+            sub_res = jisuan(sub_sr)		#调用计算函数，返回值赋值给sub_res
+            sr = sr.replace(n.group(),str(sub_res))		#将m截取的第一个括号内容替换为转化为str类型的sub_res
+        else:
+            print('结果：',jisuan(sr))		#如果没有括号了，打印计算函数返回的结果
+            flag = False					#将标志位设置为False，用于跳出循环
+
+if __name__ == "__main__":
+    print("----------欢迎使用计算器----------")
+    while True:
+        flag = True							#设置一个标志位
+        sr = input("输入要计算的函数(q:退出)：")	#让用户输入计算函数，赋值给sr
+        sr = re.sub("\s*","",sr)			#在sr中找到所有的空格，删除
+        error = re.search('[0-9q\*\/\-\+]',sr)	#使用正则查找方法，在sr中找到0-9q\*\/\-\+这些字符，赋值给error
+        while flag:
+            if not error:					#如果error为空
+                print("输入有误")			#打印输入有误
+                sr = input("请重新输入要计算的函数(q:退出)：")	#重新让用户输入
+            else:
+                if error.group() == 'q':		#如果用户输入的是q
+                    exit("再见")						#则推出整个程序
+                kuohao(sr)						#用户输入的是计算函数，则调用去除括号函数
+                flag = False					#并将标志位设置为False
+
+#1 - 2 * ( (60-30 + ( -40 / 5 ) * (9-2*5/3 +7 /3*99/4*2998 +10*568/14))-(4*3)/(16-3*2) )

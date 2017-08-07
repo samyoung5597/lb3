@@ -1,0 +1,5 @@
+{"name": "zds", "password": "111", "login_status": true, "frost_status": false, "login_times": 0, "limit": 41.0, "pay_mm": "1"}
+{"name": "aaa", "password": "222", "login_status": true, "frost_status": false, "login_times": 0, "limit": -3219, "pay_mm": "1"}
+{"name": "alex", "password": "321", "login_status": false, "frost_status": false, "login_times": 0, "limit": 15000, "pay_mm": "1"}
+{"name": "egon", "password": "111", "login_status": false, "frost_status": false, "login_times": 0, "limit": 14970, "pay_mm": "1"}
+{"name": "yuan", "password": "222", "login_status": false, "frost_status": false, "login_times": 0, "limit": 15200, "pay_mm": "1"}
